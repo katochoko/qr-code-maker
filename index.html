@@ -3,13 +3,27 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRコードメーカー</title>
-<link rel="stylesheet" href="style.css">
-<script defer src="vendor/qrcode.js"></script><script defer src="vendor/qrcode_UTF8.js"></script><script defer src="app.js"></script>
+<link rel="stylesheet" href="style.css?v=20260924-3">
+<script defer src="vendor/qrcode.js"></script><script defer src="vendor/qrcode_UTF8.js"></script><script defer src="app.js?v=20260924-3"></script>
+<style>
+.workspace > .controls { grid-column: 1; grid-row: 1; }
+.workspace > .preview { grid-column: 2; grid-row: 1; }
+@media (max-width: 700px) {
+  .workspace > .preview { grid-column: 1; grid-row: 1; }
+  .workspace > .controls { grid-column: 1; grid-row: 2; }
+}
+</style>
 </head>
 <body>
 <main>
 <header><span class="brand">QR / MAKER</span><h1>QRコードメーカー</h1><p>URLから、タイトル付きのQRコードを。</p></header>
 <div class="workspace">
+<section class="preview" aria-label="プレビュー">
+<div class="preview-label">プレビュー</div>
+<div class="paper"><div id="empty"><div class="empty-symbol" aria-hidden="true">＋</div><p>URLを入力して<br>QRコードを生成してください</p></div><canvas id="canvas" hidden aria-label="生成されたQRコード"></canvas></div>
+<button id="download" class="download" disabled>PNGをダウンロード</button>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</section>
 <section class="controls" aria-label="QRコードの設定">
 <form id="form" novalidate>
 <label for="url">URL</label><input id="url" type="url" placeholder="https://example.com" autocomplete="url" spellcheck="false" aria-describedby="error" required>
@@ -22,13 +36,9 @@
 <button class="reset" type="reset">リセット</button>
 </form>
 </section>
-<section class="preview" aria-label="プレビュー">
-<div class="preview-label">プレビュー</div>
-<div class="paper"><div id="empty"><div class="empty-symbol" aria-hidden="true">＋</div><p>URLを入力して<br>QRコードを生成してください</p></div><canvas id="canvas" hidden aria-label="生成されたQRコード"></canvas></div>
-<button id="download" class="download" disabled>PNGをダウンロード</button>
-<p id="status" class="status" role="status" aria-live="polite"></p>
-</section>
+
 </div>
 <footer>QRコードはブラウザー内で生成します。入力したURLは外部に送信しません。</footer>
 </main>
 </body></html>
+

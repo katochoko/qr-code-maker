@@ -2,3 +2,4 @@
 
 /* The canvas alone determines the white paper height after generation. */
 .paper:has(canvas:not([hidden])){min-height:0}
+

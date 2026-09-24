@@ -101,3 +101,4 @@ download.addEventListener('click', () => {
   anchor.download = filename; anchor.href = canvas.toDataURL('image/png');
   document.body.append(anchor); anchor.click(); anchor.remove();
 });
+
