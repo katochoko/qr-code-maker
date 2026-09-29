@@ -169,16 +169,14 @@ function applyLanguage(value, remember = false) {
  document.querySelector('.preview').setAttribute('aria-label', t.preview);
  document.querySelector('.controls').setAttribute('aria-label', t.settings);
  document.querySelector('.clear-all').setAttribute('aria-label', t.clearLabel);
- document.querySelector('.languages').setAttribute('aria-label', t.language);
+ document.querySelector('#language-select').setAttribute('aria-label', t.language);
  canvas.setAttribute('aria-label', t.canvas);
- document.querySelectorAll('[data-language]').forEach(button => {
-  button.setAttribute('aria-pressed', String(button.dataset.language === language));
- });
+ document.querySelector('#language-select').value = language;
  setError(errorKey);
  if (remember) { try { localStorage.setItem('qr-maker-language', language); } catch {} }
 }
-document.querySelectorAll('[data-language]').forEach(button => {
- button.addEventListener('click', () => applyLanguage(button.dataset.language, true));
+document.querySelector('#language-select').addEventListener('change', event => {
+ applyLanguage(event.target.value, true);
 });
 let savedLanguage;
 try { savedLanguage = localStorage.getItem('qr-maker-language'); } catch {}

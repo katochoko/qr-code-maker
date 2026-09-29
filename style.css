@@ -4,9 +4,6 @@
 .paper:has(canvas:not([hidden])){min-height:0}
 
 
-.languages { display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
-.languages button { background:transparent; color:#52657b; font-size:14px; font-weight:400; min-height:44px; padding:8px 12px; border:1px solid transparent; }
-.languages button[aria-pressed="true"] { background:#e7efff; color:#174bbc; border-color:#aac5ff; font-weight:650; }
 #empty p { white-space:pre-line; }
 
 
@@ -17,3 +14,8 @@ html:lang(vi), [lang="vi"] {
   letter-spacing: normal;
 }
 html:lang(vi) h1 { letter-spacing: normal; }
+
+.header-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.header-top .brand { white-space:nowrap; }
+#language-select { width:126px; flex-shrink:0; min-height:44px; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#52657b; font:14px/1.5 Arial,"Segoe UI","Noto Sans JP","Yu Gothic",sans-serif; }
+#language-select:focus-visible { outline:3px solid #93b8ff; outline-offset:3px; }

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRコードメーカー</title>
-<link rel="stylesheet" href="style.css?v=20260929-font2">
-<script defer src="vendor/qrcode.js"></script><script defer src="vendor/qrcode_UTF8.js"></script><script defer src="app.js?v=20260929-font2"></script>
+<link rel="stylesheet" href="style.css?v=20260929-menu3">
+<script defer src="vendor/qrcode.js"></script><script defer src="vendor/qrcode_UTF8.js"></script><script defer src="app.js?v=20260929-menu3"></script>
 <style>
 .workspace > .controls { grid-column: 1; grid-row: 1; }
 .workspace > .preview { grid-column: 2; grid-row: 1; }
@@ -20,11 +20,12 @@
 </head>
 <body>
 <main>
-<header><nav class="languages" aria-label="Language">
-<button type="button" data-language="ja" lang="ja">日本語</button>
-<button type="button" data-language="en" lang="en">English</button>
-<button type="button" data-language="vi" lang="vi">Tiếng Việt</button>
-</nav><span class="brand">QR / MAKER</span><h1>QRコードメーカー</h1><p>URLから、タイトル付きのQRコードを。</p></header>
+<header><div class="header-top"><span class="brand">QR / MAKER</span>
+<select id="language-select" aria-label="表示言語">
+<option value="ja" lang="ja">日本語</option>
+<option value="en" lang="en">English</option>
+<option value="vi" lang="vi">Tiếng Việt</option>
+</select></div><h1>QRコードメーカー</h1><p>URLから、タイトル付きのQRコードを。</p></header>
 <div class="workspace">
 <section class="preview" aria-label="プレビュー">
 <div class="preview-label">プレビュー</div>
