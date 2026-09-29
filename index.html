@@ -12,6 +12,10 @@
   .workspace > .preview { grid-column: 1; grid-row: 1; }
   .workspace > .controls { grid-column: 1; grid-row: 2; }
 }
+.url-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.url-heading > label { margin: 0; }
+.clear-all { min-height: 44px; padding: 8px 0 8px 12px; background: transparent; border: 0; border-radius: 4px; color: #52657b; font-size: 14px; font-weight: 400; line-height: 1.5; text-decoration: underline; text-underline-offset: 3px; }
+.clear-all:hover:not(:disabled) { color: #162d48; filter: none; }
 </style>
 </head>
 <body>
@@ -26,14 +30,16 @@
 </section>
 <section class="controls" aria-label="QRコードの設定">
 <form id="form" novalidate>
-<label for="url">URL</label><input id="url" type="url" placeholder="https://example.com" autocomplete="url" spellcheck="false" aria-describedby="error" required>
+<div class="url-heading">
+<label for="url">URL</label>
+<button class="clear-all" type="reset" aria-label="URL・タイトル・QRコードをすべてクリア">すべてクリア</button>
+</div><input id="url" type="url" placeholder="https://example.com" autocomplete="url" spellcheck="false" aria-describedby="error" required>
 <p id="error" class="error" role="alert"></p>
 <button class="primary" type="submit">QRコードを生成</button>
 <div class="divider"></div>
 <label for="title">タイトル <span>任意</span></label><input id="title" type="text" maxlength="120" placeholder="例：授業資料・アンケート">
 <fieldset><legend>タイトルの位置</legend><div class="positions"><label><input type="radio" name="position" value="top">上</label><label><input type="radio" name="position" value="bottom" checked>下</label></div></fieldset>
 <p class="hint">タイトルもPNG画像に含まれます。</p>
-<button class="reset" type="reset">リセット</button>
 </form>
 </section>
 
@@ -41,4 +47,5 @@
 <footer>QRコードはブラウザー内で生成します。入力したURLは外部に送信しません。</footer>
 </main>
 </body></html>
+
 
