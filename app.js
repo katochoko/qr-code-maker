@@ -59,14 +59,14 @@ function draw() {
   status.textContent = `${canvas.width} × ${canvas.height} px`;
 }
 form.addEventListener('submit', (event) => {
-  event.preventDefault(); error.textContent = ''; urlInput.removeAttribute('aria-invalid');
+  event.preventDefault(); setError(''); urlInput.removeAttribute('aria-invalid');
   const value = urlInput.value.trim();
   try {
     if (!value || /\s/.test(value)) throw new Error('URL');
     const parsed = new URL(value);
     if (!['https:', 'http:'].includes(parsed.protocol) || !parsed.hostname) throw new Error('URL');
   } catch {
-    clearCode(); error.textContent = 'https:// または http:// で始まるURLを入力してください。';
+    clearCode(); setError('invalid');
     urlInput.setAttribute('aria-invalid', 'true'); urlInput.focus(); return;
   }
   try {
@@ -81,17 +81,17 @@ form.addEventListener('submit', (event) => {
       }));
     }
   } catch {
-    clearCode(); error.textContent = 'URLが長すぎるため生成できません。短いURLを使用してください。';
+    clearCode(); setError('tooLong');
   }
 });
 urlInput.addEventListener('input', () => {
-  error.textContent = ''; urlInput.removeAttribute('aria-invalid');
+  setError(''); urlInput.removeAttribute('aria-invalid');
   if (urlInput.value.trim() !== generatedInput) clearCode();
 });
 titleInput.addEventListener('input', draw);
 form.querySelectorAll('[name=position]').forEach(input => input.addEventListener('change', draw));
 form.addEventListener('reset', () => {
-  clearCode(); error.textContent = ''; urlInput.removeAttribute('aria-invalid');
+  clearCode(); setError(''); urlInput.removeAttribute('aria-invalid');
   setTimeout(() => urlInput.focus(), 0);
 });
 download.addEventListener('click', () => {
@@ -101,4 +101,87 @@ download.addEventListener('click', () => {
   anchor.download = filename; anchor.href = canvas.toDataURL('image/png');
   document.body.append(anchor); anchor.click(); anchor.remove();
 });
+
+
+const translations = {
+ ja: {
+ name:'QRコードメーカー', subtitle:'URLから、タイトル付きのQRコードを。',
+ preview:'プレビュー', empty:'URLを入力して\nQRコードを生成してください',
+ download:'PNGをダウンロード', settings:'QRコードの設定', clear:'すべてクリア',
+ clearLabel:'URL・タイトル・QRコードをすべてクリア', generate:'QRコードを生成',
+ title:'タイトル', optional:'任意', placeholder:'例：授業資料・アンケート',
+ position:'タイトルの位置', top:'上', bottom:'下', hint:'タイトルもPNG画像に含まれます。',
+ footer:'QRコードはブラウザー内で生成します。入力したURLは外部に送信しません。',
+ canvas:'生成されたQRコード', language:'表示言語',
+ invalid:'https:// または http:// で始まるURLを入力してください。',
+ tooLong:'URLが長すぎるため生成できません。短いURLを使用してください。'
+ },
+ en: {
+ name:'QR Code Maker', subtitle:'Turn a URL into a QR code with an optional title.',
+ preview:'Preview', empty:'Enter a URL\nto generate a QR code.',
+ download:'Download PNG', settings:'QR code settings', clear:'Clear all',
+ clearLabel:'Clear the URL, title and QR code', generate:'Generate QR code',
+ title:'Title', optional:'Optional', placeholder:'e.g. Course materials / Survey',
+ position:'Title position', top:'Above', bottom:'Below', hint:'The title is included in the PNG image.',
+ footer:'QR codes are generated in your browser. Your URL is not sent to an external server.',
+ canvas:'Generated QR code', language:'Display language',
+ invalid:'Enter a URL starting with https:// or http://.',
+ tooLong:'This URL is too long to generate a QR code. Please use a shorter URL.'
+ },
+ vi: {
+ name:'Trình tạo mã QR', subtitle:'Tạo mã QR từ URL, kèm tiêu đề tùy chọn.',
+ preview:'Xem trước', empty:'Nhập URL\nđể tạo mã QR.',
+ download:'Tải xuống PNG', settings:'Cài đặt mã QR', clear:'Xóa tất cả',
+ clearLabel:'Xóa URL, tiêu đề và mã QR', generate:'Tạo mã QR',
+ title:'Tiêu đề', optional:'Không bắt buộc', placeholder:'Ví dụ: Tài liệu học tập / Khảo sát',
+ position:'Vị trí tiêu đề', top:'Phía trên', bottom:'Phía dưới', hint:'Tiêu đề cũng được đưa vào ảnh PNG.',
+ footer:'Mã QR được tạo ngay trong trình duyệt. URL bạn nhập không được gửi đến máy chủ bên ngoài.',
+ canvas:'Mã QR đã tạo', language:'Ngôn ngữ hiển thị',
+ invalid:'Vui lòng nhập URL bắt đầu bằng https:// hoặc http://.',
+ tooLong:'URL quá dài nên không thể tạo mã QR. Vui lòng dùng URL ngắn hơn.'
+ }
+};
+let language = 'en';
+let errorKey = '';
+function setError(key) {
+ errorKey = key;
+ error.textContent = key ? translations[language][key] : '';
+}
+function applyLanguage(value, remember = false) {
+ language = Object.hasOwn(translations, value) ? value : 'en';
+ const t = translations[language];
+ document.documentElement.lang = language;
+ document.title = t.name;
+ const texts = {
+ 'h1':'name', 'header > p':'subtitle', '.preview-label':'preview',
+ '#empty p':'empty', '#download':'download', '.clear-all':'clear',
+ '.primary':'generate', 'legend':'position', '.hint':'hint', 'footer':'footer'
+ };
+ for (const [selector, key] of Object.entries(texts)) document.querySelector(selector).textContent = t[key];
+ const label = document.querySelector('label[for="title"]');
+ label.firstChild.textContent = t.title + ' ';
+ label.querySelector('span').textContent = t.optional;
+ titleInput.placeholder = t.placeholder;
+ for (const pos of ['top','bottom']) {
+  const input = document.querySelector('[name="position"][value="' + pos + '"]');
+  input.nextSibling.textContent = t[pos];
+ }
+ document.querySelector('.preview').setAttribute('aria-label', t.preview);
+ document.querySelector('.controls').setAttribute('aria-label', t.settings);
+ document.querySelector('.clear-all').setAttribute('aria-label', t.clearLabel);
+ document.querySelector('.languages').setAttribute('aria-label', t.language);
+ canvas.setAttribute('aria-label', t.canvas);
+ document.querySelectorAll('[data-language]').forEach(button => {
+  button.setAttribute('aria-pressed', String(button.dataset.language === language));
+ });
+ setError(errorKey);
+ if (remember) { try { localStorage.setItem('qr-maker-language', language); } catch {} }
+}
+document.querySelectorAll('[data-language]').forEach(button => {
+ button.addEventListener('click', () => applyLanguage(button.dataset.language, true));
+});
+let savedLanguage;
+try { savedLanguage = localStorage.getItem('qr-maker-language'); } catch {}
+const browserLanguage = (navigator.language || 'en').toLowerCase().split('-')[0];
+applyLanguage(savedLanguage && Object.hasOwn(translations, savedLanguage) ? savedLanguage : browserLanguage);
 

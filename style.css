@@ -3,3 +3,9 @@
 /* The canvas alone determines the white paper height after generation. */
 .paper:has(canvas:not([hidden])){min-height:0}
 
+
+.languages { display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.languages button { background:transparent; color:#52657b; font-size:14px; font-weight:400; min-height:44px; padding:8px 12px; border:1px solid transparent; }
+.languages button[aria-pressed="true"] { background:#e7efff; color:#174bbc; border-color:#aac5ff; font-weight:650; }
+#empty p { white-space:pre-line; }
+
