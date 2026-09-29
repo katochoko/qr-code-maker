@@ -25,9 +25,9 @@ function draw() {
   const size = (count + 8) * scale;
   const ctx = canvas.getContext('2d');
   const fontSize = Math.round(size * .037);
-  const font = `600 ${fontSize}px system-ui, "Noto Sans JP", "Yu Gothic", sans-serif`;
+  const font = `600 ${fontSize}px Arial, "Segoe UI", "Noto Sans JP", "Yu Gothic", sans-serif`;
   ctx.font = font;
-  const title = titleInput.value.trim();
+  const title = titleInput.value.trim().normalize('NFC');
   const lines = [];
   let line = '';
   for (const char of Array.from(title)) {

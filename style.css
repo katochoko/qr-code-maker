@@ -9,3 +9,11 @@
 .languages button[aria-pressed="true"] { background:#e7efff; color:#174bbc; border-color:#aac5ff; font-weight:650; }
 #empty p { white-space:pre-line; }
 
+
+/* Keep Vietnamese letters and tone marks in a Latin font rather than a Japanese fallback. */
+html:lang(vi), [lang="vi"] {
+  font-family: Arial, "Segoe UI", "Helvetica Neue", sans-serif;
+  line-height: 1.6;
+  letter-spacing: normal;
+}
+html:lang(vi) h1 { letter-spacing: normal; }
