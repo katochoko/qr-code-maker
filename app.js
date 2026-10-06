@@ -116,9 +116,9 @@ const translations = {
  tooLong:"データが長すぎるため生成できません。入力内容を短くしてください。",
  inputLabel:"URLまたはテキスト",
  inputPlaceholder:"https://example.com または短い文章",
- inputHelp:"テキストは20文字まで。URLは https:// または http:// から。",
+ inputHelp:"短い文章がおすすめです。読み取り画面に表示される文字数は、端末やアプリによって異なります。",
  emptyInput:"URLまたはテキストを入力してください。",
- textLimit:"テキストは20文字以内にしてください。",
+ characterCount:"{count}文字",
  urlCount:"URL",
  },
  en: {
@@ -134,9 +134,9 @@ const translations = {
  tooLong:"There is too much data to generate a QR code. Please shorten your input.",
  inputLabel:"URL or text",
  inputPlaceholder:"https://example.com or a short message",
- inputHelp:"Text: up to 20 characters. URLs: start with https:// or http://.",
+ inputHelp:"Short text is recommended. The amount of text shown when scanning varies by device and app.",
  emptyInput:"Enter a URL or text.",
- textLimit:"Keep text to 20 characters or fewer.",
+ characterCount:"{count} characters", characterCountOne:"1 character",
  urlCount:"URL",
  },
  vi: {
@@ -152,9 +152,9 @@ const translations = {
  tooLong:"Dữ liệu quá dài nên không thể tạo mã QR. Vui lòng rút ngắn nội dung.",
  inputLabel:"URL hoặc văn bản",
  inputPlaceholder:"https://example.com hoặc một câu ngắn",
- inputHelp:"Văn bản: tối đa 20 ký tự. URL: bắt đầu bằng https:// hoặc http://.",
+ inputHelp:"Nên dùng văn bản ngắn. Số ký tự hiển thị khi quét tùy thuộc vào thiết bị và ứng dụng.",
  emptyInput:"Vui lòng nhập URL hoặc văn bản.",
- textLimit:"Vui lòng nhập văn bản không quá 20 ký tự.",
+ characterCount:"{count} ký tự",
  urlCount:"URL",
  }
 };
@@ -216,13 +216,15 @@ function inspectInput(value) {
     } catch { return { kind: 'url', error: 'invalid' }; }
   }
   const count = countCharacters(value);
-  return { kind: 'text', count, error: count > 20 ? 'textLimit' : '' };
+  return { kind: 'text', count, error: '' };
 }
 function updateInputInfo() {
   const input = inspectInput(urlInput.value.trim());
   const counter = document.querySelector('#input-count');
-  counter.textContent = input.kind === 'url' ? translations[language].urlCount : `${input.count} / 20`;
-  counter.classList.toggle('over-limit', input.error === 'textLimit');
+  const t = translations[language];
+  counter.textContent = input.kind === 'url' ? t.urlCount
+    : (input.count === 1 && t.characterCountOne ? t.characterCountOne : t.characterCount.replace('{count}', input.count));
+
 }
 
 let savedLanguage;

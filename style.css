@@ -24,4 +24,3 @@ html:lang(vi) h1 { letter-spacing: normal; }
 .input-info { display:flex; align-items:flex-start; gap:12px; margin-top:8px; font-size:12px; line-height:1.6; color:#657587; }
 #input-help { flex:1; }
 #input-count { flex-shrink:0; font-variant-numeric:tabular-nums; }
-#input-count.over-limit { color:#b42318; font-weight:700; }
