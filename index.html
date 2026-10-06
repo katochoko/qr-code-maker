@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>QRコードメーカー</title>
-<link rel="stylesheet" href="style.css?v=20260929-menu3">
-<script defer src="vendor/qrcode.js"></script><script defer src="vendor/qrcode_UTF8.js"></script><script defer src="app.js?v=20260929-menu3"></script>
+<link rel="stylesheet" href="style.css?v=20261006-text1">
+<script defer src="vendor/qrcode.js"></script><script defer src="vendor/qrcode_UTF8.js"></script><script defer src="app.js?v=20261006-text1"></script>
 <style>
 .workspace > .controls { grid-column: 1; grid-row: 1; }
 .workspace > .preview { grid-column: 2; grid-row: 1; }
@@ -36,9 +36,10 @@
 <section class="controls" aria-label="QRコードの設定">
 <form id="form" novalidate>
 <div class="url-heading">
-<label for="url">URL</label>
+<label for="url">URLまたはテキスト</label>
 <button class="clear-all" type="reset" aria-label="URL・タイトル・QRコードをすべてクリア">すべてクリア</button>
-</div><input id="url" type="url" placeholder="https://example.com" autocomplete="url" spellcheck="false" aria-describedby="error" required>
+</div><input id="url" type="text" placeholder="https://example.com" autocomplete="off" spellcheck="false" aria-describedby="input-help input-count error" required>
+<div class="input-info"><span id="input-help"></span><span id="input-count" aria-live="polite"></span></div>
 <p id="error" class="error" role="alert"></p>
 <button class="primary" type="submit">QRコードを生成</button>
 <div class="divider"></div>
@@ -52,6 +53,7 @@
 <footer>QRコードはブラウザー内で生成します。入力したURLは外部に送信しません。</footer>
 </main>
 </body></html>
+
 
 
 

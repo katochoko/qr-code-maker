@@ -61,12 +61,10 @@ function draw() {
 form.addEventListener('submit', (event) => {
   event.preventDefault(); setError(''); urlInput.removeAttribute('aria-invalid');
   const value = urlInput.value.trim();
-  try {
-    if (!value || /\s/.test(value)) throw new Error('URL');
-    const parsed = new URL(value);
-    if (!['https:', 'http:'].includes(parsed.protocol) || !parsed.hostname) throw new Error('URL');
-  } catch {
-    clearCode(); setError('invalid');
+  const input = inspectInput(value);
+  updateInputInfo();
+  if (input.error) {
+    clearCode(); setError(input.error);
     urlInput.setAttribute('aria-invalid', 'true'); urlInput.focus(); return;
   }
   try {
@@ -86,13 +84,14 @@ form.addEventListener('submit', (event) => {
 });
 urlInput.addEventListener('input', () => {
   setError(''); urlInput.removeAttribute('aria-invalid');
+  updateInputInfo();
   if (urlInput.value.trim() !== generatedInput) clearCode();
 });
 titleInput.addEventListener('input', draw);
 form.querySelectorAll('[name=position]').forEach(input => input.addEventListener('change', draw));
 form.addEventListener('reset', () => {
   clearCode(); setError(''); urlInput.removeAttribute('aria-invalid');
-  setTimeout(() => urlInput.focus(), 0);
+  setTimeout(() => { updateInputInfo(); urlInput.focus(); }, 0);
 });
 download.addEventListener('click', () => {
   if (!qr) return;
@@ -105,40 +104,58 @@ download.addEventListener('click', () => {
 
 const translations = {
  ja: {
- name:'QRコードメーカー', subtitle:'URLから、タイトル付きのQRコードを。',
- preview:'プレビュー', empty:'URLを入力して\nQRコードを生成してください',
+ name:'QRコードメーカー', subtitle:"URLや短い文章から、タイトル付きのQRコードを。",
+ preview:'プレビュー', empty:"URLまたはテキストを入力して\nQRコードを生成してください",
  download:'PNGをダウンロード', settings:'QRコードの設定', clear:'すべてクリア',
- clearLabel:'URL・タイトル・QRコードをすべてクリア', generate:'QRコードを生成',
+ clearLabel:"入力内容・タイトル・QRコードをすべてクリア", generate:'QRコードを生成',
  title:'タイトル', optional:'任意', placeholder:'例：授業資料・アンケート',
  position:'タイトルの位置', top:'上', bottom:'下', hint:'タイトルもPNG画像に含まれます。',
- footer:'QRコードはブラウザー内で生成します。入力したURLは外部に送信しません。',
+ footer:"QRコードはブラウザー内で生成します。入力内容は外部に送信しません。",
  canvas:'生成されたQRコード', language:'表示言語',
  invalid:'https:// または http:// で始まるURLを入力してください。',
- tooLong:'URLが長すぎるため生成できません。短いURLを使用してください。'
+ tooLong:"データが長すぎるため生成できません。入力内容を短くしてください。",
+ inputLabel:"URLまたはテキスト",
+ inputPlaceholder:"https://example.com または短い文章",
+ inputHelp:"テキストは20文字まで。URLは https:// または http:// から。",
+ emptyInput:"URLまたはテキストを入力してください。",
+ textLimit:"テキストは20文字以内にしてください。",
+ urlCount:"URL",
  },
  en: {
- name:'QR Code Maker', subtitle:'Turn a URL into a QR code with an optional title.',
- preview:'Preview', empty:'Enter a URL\nto generate a QR code.',
+ name:'QR Code Maker', subtitle:"Turn a URL or short message into a QR code with an optional title.",
+ preview:'Preview', empty:"Enter a URL or text\nto generate a QR code.",
  download:'Download PNG', settings:'QR code settings', clear:'Clear all',
- clearLabel:'Clear the URL, title and QR code', generate:'Generate QR code',
+ clearLabel:"Clear the input, title and QR code", generate:'Generate QR code',
  title:'Title', optional:'Optional', placeholder:'e.g. Course materials / Survey',
  position:'Title position', top:'Above', bottom:'Below', hint:'The title is included in the PNG image.',
- footer:'QR codes are generated in your browser. Your URL is not sent to an external server.',
+ footer:"QR codes are generated in your browser. Your input is not sent to an external server.",
  canvas:'Generated QR code', language:'Display language',
  invalid:'Enter a URL starting with https:// or http://.',
- tooLong:'This URL is too long to generate a QR code. Please use a shorter URL.'
+ tooLong:"There is too much data to generate a QR code. Please shorten your input.",
+ inputLabel:"URL or text",
+ inputPlaceholder:"https://example.com or a short message",
+ inputHelp:"Text: up to 20 characters. URLs: start with https:// or http://.",
+ emptyInput:"Enter a URL or text.",
+ textLimit:"Keep text to 20 characters or fewer.",
+ urlCount:"URL",
  },
  vi: {
- name:'Trình tạo mã QR', subtitle:'Tạo mã QR từ URL, kèm tiêu đề tùy chọn.',
- preview:'Xem trước', empty:'Nhập URL\nđể tạo mã QR.',
+ name:'Trình tạo mã QR', subtitle:"Tạo mã QR từ URL hoặc văn bản ngắn, kèm tiêu đề tùy chọn.",
+ preview:'Xem trước', empty:"Nhập URL hoặc văn bản\nđể tạo mã QR.",
  download:'Tải xuống PNG', settings:'Cài đặt mã QR', clear:'Xóa tất cả',
- clearLabel:'Xóa URL, tiêu đề và mã QR', generate:'Tạo mã QR',
+ clearLabel:"Xóa nội dung nhập, tiêu đề và mã QR", generate:'Tạo mã QR',
  title:'Tiêu đề', optional:'Không bắt buộc', placeholder:'Ví dụ: Tài liệu học tập / Khảo sát',
  position:'Vị trí tiêu đề', top:'Phía trên', bottom:'Phía dưới', hint:'Tiêu đề cũng được đưa vào ảnh PNG.',
- footer:'Mã QR được tạo ngay trong trình duyệt. URL bạn nhập không được gửi đến máy chủ bên ngoài.',
+ footer:"Mã QR được tạo ngay trong trình duyệt. Nội dung bạn nhập không được gửi đến máy chủ bên ngoài.",
  canvas:'Mã QR đã tạo', language:'Ngôn ngữ hiển thị',
  invalid:'Vui lòng nhập URL bắt đầu bằng https:// hoặc http://.',
- tooLong:'URL quá dài nên không thể tạo mã QR. Vui lòng dùng URL ngắn hơn.'
+ tooLong:"Dữ liệu quá dài nên không thể tạo mã QR. Vui lòng rút ngắn nội dung.",
+ inputLabel:"URL hoặc văn bản",
+ inputPlaceholder:"https://example.com hoặc một câu ngắn",
+ inputHelp:"Văn bản: tối đa 20 ký tự. URL: bắt đầu bằng https:// hoặc http://.",
+ emptyInput:"Vui lòng nhập URL hoặc văn bản.",
+ textLimit:"Vui lòng nhập văn bản không quá 20 ký tự.",
+ urlCount:"URL",
  }
 };
 let language = 'en';
@@ -162,6 +179,10 @@ function applyLanguage(value, remember = false) {
  label.firstChild.textContent = t.title + ' ';
  label.querySelector('span').textContent = t.optional;
  titleInput.placeholder = t.placeholder;
+ urlInput.placeholder = t.inputPlaceholder;
+ document.querySelector('label[for="url"]').textContent = t.inputLabel;
+ document.querySelector('#input-help').textContent = t.inputHelp;
+ updateInputInfo();
  for (const pos of ['top','bottom']) {
   const input = document.querySelector('[name="position"][value="' + pos + '"]');
   input.nextSibling.textContent = t[pos];
@@ -178,8 +199,35 @@ function applyLanguage(value, remember = false) {
 document.querySelector('#language-select').addEventListener('change', event => {
  applyLanguage(event.target.value, true);
 });
+
+const textSegmenter = typeof Intl.Segmenter === 'function'
+  ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
+function countCharacters(value) {
+  return textSegmenter ? Array.from(textSegmenter.segment(value)).length
+    : Array.from(value.normalize('NFC')).length;
+}
+function inspectInput(value) {
+  if (!value) return { kind: 'text', count: 0, error: 'emptyInput' };
+  if (/^https?:/i.test(value)) {
+    try {
+      const parsed = new URL(value);
+      if (!/^https?:\/\//i.test(value) || /\s/.test(value) || !parsed.hostname) throw new Error();
+      return { kind: 'url', error: '' };
+    } catch { return { kind: 'url', error: 'invalid' }; }
+  }
+  const count = countCharacters(value);
+  return { kind: 'text', count, error: count > 20 ? 'textLimit' : '' };
+}
+function updateInputInfo() {
+  const input = inspectInput(urlInput.value.trim());
+  const counter = document.querySelector('#input-count');
+  counter.textContent = input.kind === 'url' ? translations[language].urlCount : `${input.count} / 20`;
+  counter.classList.toggle('over-limit', input.error === 'textLimit');
+}
+
 let savedLanguage;
 try { savedLanguage = localStorage.getItem('qr-maker-language'); } catch {}
 const browserLanguage = (navigator.language || 'en').toLowerCase().split('-')[0];
 applyLanguage(savedLanguage && Object.hasOwn(translations, savedLanguage) ? savedLanguage : browserLanguage);
+
 

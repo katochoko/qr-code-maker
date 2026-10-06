@@ -19,3 +19,9 @@ html:lang(vi) h1 { letter-spacing: normal; }
 .header-top .brand { white-space:nowrap; }
 #language-select { width:126px; flex-shrink:0; min-height:44px; padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; color:#52657b; font:14px/1.5 Arial,"Segoe UI","Noto Sans JP","Yu Gothic",sans-serif; }
 #language-select:focus-visible { outline:3px solid #93b8ff; outline-offset:3px; }
+
+
+.input-info { display:flex; align-items:flex-start; gap:12px; margin-top:8px; font-size:12px; line-height:1.6; color:#657587; }
+#input-help { flex:1; }
+#input-count { flex-shrink:0; font-variant-numeric:tabular-nums; }
+#input-count.over-limit { color:#b42318; font-weight:700; }
